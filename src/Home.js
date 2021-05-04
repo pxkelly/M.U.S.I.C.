@@ -6,6 +6,8 @@ import { RangeStepInput } from 'react-range-step-input';
 // Global variables defined here
 // synth is the synth used on the entire page
 var synth = new Tone.Synth().toDestination();
+// keyDown keeps track if the key is pressed or not (note is playing)
+var keyDown = false;
 
 class Home extends Component{
   constructor(props) {
@@ -32,6 +34,7 @@ class Home extends Component{
 
     // Binds function to page
     this.synthControl = this.synthControl.bind(this);
+    this.synthOff = this.synthOff.bind(this);
     this.updateDistortion = this.updateDistortion.bind(this);
     this.updateReverbRoom = this.updateReverbRoom.bind(this);
     this.updateReverbWet = this.updateReverbWet.bind(this);
@@ -44,6 +47,7 @@ class Home extends Component{
   // Adds an event listener for keystrokes on the page's load
   componentDidMount(){
      document.addEventListener("keydown", this.synthControl, false);
+     document.addEventListener("keyup", this.synthOff, false);
      document.querySelector('button')?.addEventListener('click', async () => {
     	await Tone.start()
     	console.log('audio is ready')
@@ -52,7 +56,8 @@ class Home extends Component{
 
    // Removes the event listener when the page unloads to prevent leaks
    componentWillUnmount(){
-     document.removeEventListener("keydown", this.synthControl, false);
+      document.removeEventListener("keydown", this.synthControl, false);
+      document.removeEventListener("keyup", this.synthOff, false);
    }
 
   // Controls the synth given the keystroke
@@ -61,39 +66,47 @@ class Home extends Component{
       var note = "";
       var currOctave = 0;
       var newOctave = 0;
-      if(event.key === "a") {
+      if(event.key === "a" && !keyDown) {
         note = "C" + this.synthState.Octave.toString();
-        synth.triggerAttackRelease(note, "8n", now)
+        synth.triggerAttack(note, now);
+        keyDown = true;
       }
-      else if(event.key === "s") {
+      else if(event.key === "s" && !keyDown) {
         note = "D" + this.synthState.Octave.toString();
-        synth.triggerAttackRelease(note, "8n", now)
+        synth.triggerAttack(note, now);
+        keyDown = true;
       }
-      else if(event.key === "d") {
+      else if(event.key === "d" && !keyDown) {
         note = "E" + this.synthState.Octave.toString();
-        synth.triggerAttackRelease(note, "8n", now)
+        synth.triggerAttack(note, now);
+        keyDown = true;
       }
-      else if(event.key === "f") {
+      else if(event.key === "f" && !keyDown) {
         note = "F" + this.synthState.Octave.toString();
-        synth.triggerAttackRelease(note, "8n", now)
+        synth.triggerAttack(note, now);
+        keyDown = true;
       }
-      else if(event.key === "g") {
+      else if(event.key === "g" && !keyDown) {
         note = "G" + this.synthState.Octave.toString();
-        synth.triggerAttackRelease(note, "8n", now)
+        synth.triggerAttack(note, now);
+        keyDown = true;
       }
-      else if(event.key === "h") {
+      else if(event.key === "h" && !keyDown) {
         note = "A" + this.synthState.Octave.toString();
-        synth.triggerAttackRelease(note, "8n", now)
+        synth.triggerAttack(note, now);
+        keyDown = true;
       }
-      else if(event.key === "j") {
+      else if(event.key === "j" && !keyDown) {
         note = "B" + this.synthState.Octave.toString();
-        synth.triggerAttackRelease(note, "8n", now)
+        synth.triggerAttack(note, now);
+        keyDown = true;
       }
-      else if(event.key === "k") {
+      else if(event.key === "k" && !keyDown) {
         currOctave = this.synthState.Octave;
         currOctave = currOctave + 1;
         note = "C" + currOctave.toString();
-        synth.triggerAttackRelease(note, "8n", now)
+        synth.triggerAttack(note, now);
+        keyDown = true;
       }
       else if(event.key === "z") {
         // Lowers the octave of the note by 1 and resets the state to match
@@ -113,6 +126,17 @@ class Home extends Component{
           this.synthState.Octave = newOctave;
         }
       }
+  }
+
+  // Turns the synth off once the key is released
+  synthOff(event){
+    const now = Tone.now();
+    // Create a string of possible keys that can be held
+    var allKeys = "asdfghjk";
+    if(allKeys.includes(event.key)) {
+      synth.triggerRelease(now);
+      keyDown = false;
+    }
   }
 
   // Resets the synth to match the current state
