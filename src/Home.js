@@ -294,7 +294,8 @@ class Home extends Component{
 
   // Changes the oscillator attached to the synth
   updateOscillator(event) {
-    synth.oscillator.type = event.target.id;
+    // Update the global variable to save these changes
+    oscillator = event.target.id;
     // Updates the selected button on the page
     if (event.target.id !== "triangle") {
       this.setState({TriangleOsc: false});
@@ -302,13 +303,14 @@ class Home extends Component{
     else {
       this.setState({TriangleOsc: true});
     }
-    // Update the global variable to save these changes
-    oscillator = event.target.id;
+    // Refresh the synth with the new oscillator
+    this.refreshSynth();
   }
 
   // Adds the effect to the effects list
   addEffect(effect) {
     effects.push(effect);
+    console.log(effects)
   }
 
   // Removes the effect from the effects list
@@ -316,12 +318,12 @@ class Home extends Component{
     var index = effects.indexOf(effect);
     // Splices the effect out of the list
     effects.splice(index, 1);
+    console.log(effects)
   }
 
   // Updates the synth to match the current state
   refreshSynth() {
     // Resets the synth
-    console.log(effects)
     synth = new Tone.Synth().toDestination();
     // Add the effects to the synth
     effects.forEach(effect => synth.connect(eval(effect)));
