@@ -1,0 +1,46 @@
+body {
+  background-color: #a9a9a9;
+}
+
+.welcome-container {
+  margin: auto, auto, auto, auto;
+  align-items: center;
+}
+
+.section-header {
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.controls {
+  text-align: center;
+  justify-content: center;
+}
+
+.effects-container {
+  margin: auto, auto, auto, auto;
+  align-items: center;
+}
+
+.effects {
+  justify-content: center;
+  padding-top: 5px;
+}
+
+.slider {
+  justify-content: left;
+}
+
+.bar {
+  padding-top: 3px;
+}
+
+.oscillator-container {
+  margin: auto, auto, auto, auto;
+  align-items: center;
+}
+
+.oscillators {
+  justify-content: center;
+}

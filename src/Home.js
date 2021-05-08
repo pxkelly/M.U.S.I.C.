@@ -3,6 +3,8 @@ import { Container, Row, Col, Form } from 'react-bootstrap';
 import * as Tone from 'tone';
 import { RangeStepInput } from 'react-range-step-input';
 import Switch from "react-switch";
+import "./App.css";
+import "./Pages.css";
 
 // Global variables defined here
 // synth is the synth used on the entire page
@@ -70,10 +72,6 @@ class Home extends Component{
   componentDidMount(){
     document.addEventListener("keydown", this.synthControl, false);
     document.addEventListener("keyup", this.synthOff, false);
-    document.querySelector('button')?.addEventListener('click', async () => {
-    	await Tone.start()
-    	console.log('audio is ready')
-    })
    }
 
   // Removes the event listener when the page unloads to prevent leaks
@@ -334,137 +332,164 @@ class Home extends Component{
   render(){
     return(
       <>
-      <button id="button">Play/Pause</button>
-        <Row>
-          <Col>
-            <h1>Welcome!</h1>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <p>Controls:</p>
-          </Col>
-          <Col>
+        <Container className="welcome-container">
+          <Row className="section-header">
+            <Col>
+              <h1>Welcome to M.U.S.I.C.</h1>
+            </Col>
+          </Row>
+          <Row className="section-header">
+            <h5>Controls</h5>
+          </Row>
+          <Row className="controls">
             <p>Use keys a, s, d, f, g, h, j, and k to play notes</p>
+          </Row>
+          <Row className="controls">
             <p>The a key corresponds to a C note, s to D, and so on</p>
+          </Row>
+          <Row className="controls">
             <p>Use z to decrease the octave and x to increase the octave</p>
-          </Col>
-        </Row>
-        <p>Distortion level</p>
-        <Container>
-          <Col>
-            <Switch
-              onChange={this.toggleDistortion}
-              checked={this.state.DistortionOn}
-            />
-            <RangeStepInput
-              min={0}
-              max={10}
-              value={this.state.Distortion}
-              step={0.1}
-              onChange={this.updateDistortion}
-              disabled={!this.synthState.DistortionOn}
-            />
-          </Col>
-        </Container>
-        <p>Reverb</p>
-        <Container>
-          <Col>
-            <Switch
-              onChange={this.toggleReverb}
-              checked={this.synthState.ReverbOn}
-            />
-            <RangeStepInput
-              min={0}
-              max={0.9}
-              value={this.state.ReverbRoom}
-              step={0.01}
-              onChange={this.updateReverbRoom}
-              disabled={!this.state.ReverbOn}
-            />
-          </Col>
-        </Container>
-        <p>Vibrato</p>
-        <Container>
-          <Col>
-            <Switch
-              onChange={this.toggleVibrato}
-              checked={this.state.VibratoOn}
-            />
-            <p>Frequency</p>
-            <RangeStepInput
-              min={0}
-              max={10}
-              value={this.state.VibratoFreq}
-              step={0.1}
-              onChange={this.updateVibratoFreq}
-              disabled={!this.state.VibratoOn}
-            />
-          </Col>
-          <Col>
-            <p>Pitch Modulation</p>
-            <RangeStepInput
-              min={0}
-              max={1}
-              value={this.state.VibratoPitch}
-              step={0.1}
-              onChange={this.updateVibratoPitch}
-              disabled={!this.state.VibratoOn}
-            />
-          </Col>
-        </Container>
-        <p>Lowpass Filter</p>
-        <Container>
-          <Col>
-            <Switch
-              onChange={this.toggleLowpass}
-              checked={this.state.LowpassOn}
-            />
-            <p>Cutoff frequency</p>
-            <RangeStepInput
-              min={0}
-              max={5000}
-              value={this.state.LowpassCut}
-              step={10}
-              onChange={this.updateLowpassCut}
-              disabled={!this.state.LowpassOn}
-            />
-          </Col>
+          </Row>
         </Container>
 
-        <Container>
-          <p>Oscillator Type</p>
-          <Col>
-            <Form.Check
-              type="radio"
-              label="Sine"
-              id="sine"
-              name="formHorizontalRadios"
-              onChange={this.updateOscillator}
-            />
-            <Form.Check
-              type="radio"
-              label="Square"
-              id="square"
-              name="formHorizontalRadios"
-              onChange={this.updateOscillator}
-            />
-            <Form.Check
-              type="radio"
-              label="Triangle"
-              id="triangle"
-              name="formHorizontalRadios"
-              onChange={this.updateOscillator}
-              checked={this.state.TriangleOsc}
-            />
-            <Form.Check
-              type="radio"
-              label="Sawtooth"
-              id="sawtooth"
-              name="formHorizontalRadios"
-              onChange={this.updateOscillator}
-            />
-          </Col>
+        <br />
+
+        <Container className="effects-container">
+          <Row className="section-header">
+            <h5>Synth Effects</h5>
+          </Row>
+          <Row className="effects">
+            <Col xs={1}>
+              <p>Distortion</p>
+              <Row className="slider">
+                <Col xs={6}>
+                  <p>Level: </p>
+                </Col>
+                <Col className="bar" sm={1}>
+                  <RangeStepInput
+                    min={0}
+                    max={10}
+                    value={this.state.Distortion}
+                    step={0.1}
+                    onChange={this.updateDistortion}
+                    disabled={!this.synthState.DistortionOn}
+                  />
+                </Col>
+              </Row>
+            </Col>
+            <Col xs={2}>
+              <Switch
+                onChange={this.toggleDistortion}
+                checked={this.state.DistortionOn}
+              />
+            </Col>
+            <Col xs={1}>
+              <p>Reverb</p>
+              <Row className="slider">
+                <Col xs={6}>
+                  <p>Level: </p>
+                </Col>
+                <Col className="bar" sm={1}>
+                  <RangeStepInput
+                    min={0}
+                    max={0.9}
+                    value={this.state.ReverbRoom}
+                    step={0.01}
+                    onChange={this.updateReverbRoom}
+                    disabled={!this.state.ReverbOn}
+                  />
+                </Col>
+              </Row>
+            </Col>
+            <Col xs={2}>
+              <Switch
+                onChange={this.toggleReverb}
+                checked={this.synthState.ReverbOn}
+              />
+            </Col>
+            <Col xs={1}>
+              <p>Vibrato</p>
+              <Row className="slider">
+                <Col xs={6}>
+                  <p>Freq: </p>
+                </Col>
+                <Col className="bar" sm={1}>
+                  <RangeStepInput
+                    min={0}
+                    max={10}
+                    value={this.state.VibratoFreq}
+                    step={0.1}
+                    onChange={this.updateVibratoFreq}
+                    disabled={!this.state.VibratoOn}
+                  />
+                </Col>
+              </Row>
+              <Row className="slider">
+                <Col xs={6}>
+                  <p>Pitch: </p>
+                </Col>
+                <Col className="bar" sm={1}>
+                  <RangeStepInput
+                    min={0}
+                    max={1}
+                    value={this.state.VibratoPitch}
+                    step={0.1}
+                    onChange={this.updateVibratoPitch}
+                    disabled={!this.state.VibratoOn}
+                  />
+                </Col>
+              </Row>
+            </Col>
+            <Col xs={2}>
+              <Switch
+                onChange={this.toggleVibrato}
+                checked={this.state.VibratoOn}
+              />
+            </Col>
+          </Row>
+        </Container>
+
+        <br />
+
+        <Container className="oscillator-container">
+          <Row className="section-header">
+            <h5>Oscillator Type</h5>
+          </Row>
+          <Row className="oscillators">
+            <Col xs={1}>
+              <Form.Check
+                type="radio"
+                label="Sine"
+                id="sine"
+                onChange={this.updateOscillator}
+              />
+            </Col>
+            <Col xs={1}>
+              <Form.Check
+                type="radio"
+                label="Square"
+                id="square"
+                onChange={this.updateOscillator}
+              />
+            </Col>
+            <Col xs={1}>
+              <Form.Check
+                type="radio"
+                label="Triangle"
+                id="triangle"
+                onChange={this.updateOscillator}
+                checked={this.state.TriangleOsc}
+              />
+            </Col>
+            <Col xs={1}>
+              <Form.Check
+                type="radio"
+                label="Sawtooth"
+                id="sawtooth"
+                onChange={this.updateOscillator}
+              />
+            </Col>
+          </Row>
         </Container>
       </>
     )
