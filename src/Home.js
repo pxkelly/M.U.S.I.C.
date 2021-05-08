@@ -17,7 +17,7 @@ var lowpass = new Tone.Filter(0, "lowpass").toDestination();
 // This keeps track of all the active effects to add to the synthOff
 var effects = [];
 
-// This is the current oscilator on the synth, default is triangle wave
+// This is the current oscillator on the synth, default is triangle wave
 var oscillator = "triangle";
 
 // keyDown keeps track if the key is pressed or not (note is playing)
@@ -292,9 +292,18 @@ class Home extends Component{
     }
   }
 
+  // Changes the oscillator attached to the synth
   updateOscillator(event) {
-    
-    console.log(event.target.id)
+    synth.oscillator.type = event.target.id;
+    // Updates the selected button on the page
+    if (event.target.id !== "triangle") {
+      this.setState({TriangleOsc: false});
+    }
+    else {
+      this.setState({TriangleOsc: true});
+    }
+    // Update the global variable to save these changes
+    oscillator = event.target.id;
   }
 
   // Adds the effect to the effects list
@@ -316,6 +325,8 @@ class Home extends Component{
     synth = new Tone.Synth().toDestination();
     // Add the effects to the synth
     effects.forEach(effect => synth.connect(eval(effect)));
+    // Make sure the proper oscillator is used
+    synth.oscillator.type = oscillator;
   }
 
   render(){
