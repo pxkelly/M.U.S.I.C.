@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Button, Row, Col, Form } from 'react-bootstrap';
+import { Container, Row, Col, Form } from 'react-bootstrap';
 import * as Tone from 'tone';
 import { RangeStepInput } from 'react-range-step-input';
 import Switch from "react-switch";
@@ -68,86 +68,86 @@ class Home extends Component{
 
   // Adds an event listener for keystrokes on the page's load
   componentDidMount(){
-     document.addEventListener("keydown", this.synthControl, false);
-     document.addEventListener("keyup", this.synthOff, false);
-     document.querySelector('button')?.addEventListener('click', async () => {
+    document.addEventListener("keydown", this.synthControl, false);
+    document.addEventListener("keyup", this.synthOff, false);
+    document.querySelector('button')?.addEventListener('click', async () => {
     	await Tone.start()
     	console.log('audio is ready')
     })
    }
 
-   // Removes the event listener when the page unloads to prevent leaks
-   componentWillUnmount(){
-      document.removeEventListener("keydown", this.synthControl, false);
-      document.removeEventListener("keyup", this.synthOff, false);
+  // Removes the event listener when the page unloads to prevent leaks
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.synthControl, false);
+    document.removeEventListener("keyup", this.synthOff, false);
    }
 
   // Controls the synth given the keystroke
   synthControl(event){
-      const now = Tone.now();
-      var note = "";
-      var currOctave = 0;
-      var newOctave = 0;
-      if(event.key === "a" && !keyDown) {
-        note = "C" + this.synthState.Octave.toString();
-        synth.triggerAttack(note, now);
-        keyDown = true;
+    const now = Tone.now();
+    var note = "";
+    var currOctave = 0;
+    var newOctave = 0;
+    if(event.key === "a" && !keyDown) {
+      note = "C" + this.synthState.Octave.toString();
+      synth.triggerAttack(note, now);
+      keyDown = true;
+    }
+    else if(event.key === "s" && !keyDown) {
+      note = "D" + this.synthState.Octave.toString();
+      synth.triggerAttack(note, now);
+      keyDown = true;
+    }
+    else if(event.key === "d" && !keyDown) {
+      note = "E" + this.synthState.Octave.toString();
+      synth.triggerAttack(note, now);
+      keyDown = true;
+    }
+    else if(event.key === "f" && !keyDown) {
+      note = "F" + this.synthState.Octave.toString();
+      synth.triggerAttack(note, now);
+      keyDown = true;
+    }
+    else if(event.key === "g" && !keyDown) {
+      note = "G" + this.synthState.Octave.toString();
+      synth.triggerAttack(note, now);
+      keyDown = true;
+    }
+    else if(event.key === "h" && !keyDown) {
+      note = "A" + this.synthState.Octave.toString();
+      synth.triggerAttack(note, now);
+      keyDown = true;
+    }
+    else if(event.key === "j" && !keyDown) {
+      note = "B" + this.synthState.Octave.toString();
+      synth.triggerAttack(note, now);
+      keyDown = true;
+    }
+    else if(event.key === "k" && !keyDown) {
+      currOctave = this.synthState.Octave;
+      currOctave = currOctave + 1;
+      note = "C" + currOctave.toString();
+      synth.triggerAttack(note, now);
+      keyDown = true;
+    }
+    else if(event.key === "z") {
+      // Lowers the octave of the note by 1 and resets the state to match
+      currOctave = this.synthState.Octave;
+      // Makes sure you aren't decreasing the octave to a negative
+      if (currOctave > 0) {
+        newOctave = currOctave - 1;
+        this.synthState.Octave = newOctave;
       }
-      else if(event.key === "s" && !keyDown) {
-        note = "D" + this.synthState.Octave.toString();
-        synth.triggerAttack(note, now);
-        keyDown = true;
+    }
+    else if(event.key === "x") {
+      // Raises the octave of the note by 1 and resets the state to match
+      currOctave = this.synthState.Octave;
+      // Makes sure you aren't increasing octave too high (arbitrarily set at 7)
+      if (currOctave < 7) {
+        newOctave = currOctave + 1;
+        this.synthState.Octave = newOctave;
       }
-      else if(event.key === "d" && !keyDown) {
-        note = "E" + this.synthState.Octave.toString();
-        synth.triggerAttack(note, now);
-        keyDown = true;
-      }
-      else if(event.key === "f" && !keyDown) {
-        note = "F" + this.synthState.Octave.toString();
-        synth.triggerAttack(note, now);
-        keyDown = true;
-      }
-      else if(event.key === "g" && !keyDown) {
-        note = "G" + this.synthState.Octave.toString();
-        synth.triggerAttack(note, now);
-        keyDown = true;
-      }
-      else if(event.key === "h" && !keyDown) {
-        note = "A" + this.synthState.Octave.toString();
-        synth.triggerAttack(note, now);
-        keyDown = true;
-      }
-      else if(event.key === "j" && !keyDown) {
-        note = "B" + this.synthState.Octave.toString();
-        synth.triggerAttack(note, now);
-        keyDown = true;
-      }
-      else if(event.key === "k" && !keyDown) {
-        currOctave = this.synthState.Octave;
-        currOctave = currOctave + 1;
-        note = "C" + currOctave.toString();
-        synth.triggerAttack(note, now);
-        keyDown = true;
-      }
-      else if(event.key === "z") {
-        // Lowers the octave of the note by 1 and resets the state to match
-        currOctave = this.synthState.Octave;
-        // Makes sure you aren't decreasing the octave to a negative
-        if (currOctave > 0) {
-          newOctave = currOctave - 1;
-          this.synthState.Octave = newOctave;
-        }
-      }
-      else if(event.key === "x") {
-        // Raises the octave of the note by 1 and resets the state to match
-        currOctave = this.synthState.Octave;
-        // Makes sure you aren't increasing octave too high (arbitrarily set at 7)
-        if (currOctave < 7) {
-          newOctave = currOctave + 1;
-          this.synthState.Octave = newOctave;
-        }
-      }
+    }
   }
 
   // Turns the synth off once the key is released
