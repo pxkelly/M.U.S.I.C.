@@ -34,6 +34,11 @@ body {
 
 .bar {
   padding-top: 3px;
+  height: 100px;
+}
+
+.switch {
+  margin-top: -5px;
 }
 
 .oscillator-container {

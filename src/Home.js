@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 import * as Tone from 'tone';
-import { RangeStepInput } from 'react-range-step-input';
-import Switch from "react-switch";
-import "./App.css";
-import "./Pages.css";
+import Slider from '@material-ui/core/Slider';
+import Switch from '@material-ui/core/Switch';
+import './App.css';
+import './Pages.css';
 
 // Global variables defined here
 // synth is the synth used on the entire page
@@ -70,7 +70,10 @@ class Home extends Component{
 
   // Adds an event listener for keystrokes on the page's load
   componentDidMount(){
-    document.addEventListener("keydown", this.synthControl, false);
+    document.addEventListener("keydown", this.synthControl, false, async () => {
+      // Starts Tone.js
+      await Tone.start();
+    });
     document.addEventListener("keyup", this.synthOff, false);
    }
 
@@ -81,7 +84,7 @@ class Home extends Component{
    }
 
   // Controls the synth given the keystroke
-  synthControl(event){
+  synthControl(event) {
     const now = Tone.now();
     var note = "";
     var currOctave = 0;
@@ -160,19 +163,19 @@ class Home extends Component{
   }
 
   // Updates the distortion given the slider
-  updateDistortion(event) {
-    distortion.distortion = event.target.value;
+  updateDistortion(event, value) {
+    distortion.distortion = value;
     // Update the state (moves slider)
-    this.setState({Distortion: event.target.value});
+    this.setState({Distortion: value});
     // Make sure to call refreshSynth to reset to current state values
     this.refreshSynth();
   }
 
   // Turns the distortion on or off
-  toggleDistortion(checked) {
-    this.synthState.DistortionOn = checked;
+  toggleDistortion(event) {
+    this.synthState.DistortionOn = event.target.checked;
     // This allows the slider to move on the page itself
-    this.setState({DistortionOn: checked});
+    this.setState({DistortionOn: event.target.checked});
     // If the distortion is turned off, reset the distortion slider
     if (!this.synthState.DistortionOn) {
       // Resets the distortion on the synth to 0
@@ -190,19 +193,20 @@ class Home extends Component{
   }
 
   // Updates the reverb room size given the slider
-  updateReverbRoom(event) {
-    reverb.roomSize.input.value = event.target.value;
+  updateReverbRoom(event, value) {
+    console.log(value)
+    reverb.roomSize.input.value = value;
     //Update state (moves slider)
-    this.setState({ReverbRoom: event.target.value});
+    this.setState({ReverbRoom: value});
     // Make sure to call refreshSynth to reset to current state values
     this.refreshSynth();
   }
 
   // Turns the reverb on or off
-  toggleReverb(checked) {
-    this.synthState.ReverbOn = checked;
+  toggleReverb(event) {
+    this.synthState.ReverbOn = event.target.checked;
     // This allows the slider to move on the page itself
-    this.setState({ReverbOn: checked});
+    this.setState({ReverbOn: event.target.checked});
     // If the reverb is turned off, reset the reverb slider
     if (!this.synthState.ReverbOn) {
       // Resets the reverb's room size on the synth to 0
@@ -220,28 +224,28 @@ class Home extends Component{
   }
 
   // Updates the vibrato frequency given the slider
-  updateVibratoFreq(event) {
-    vibrato.frequency.value = event.target.value;
+  updateVibratoFreq(event, value) {
+    vibrato.frequency.value = value;
     // Update state (moves slier)
-    this.setState({VibratoFreq: event.target.value});
+    this.setState({VibratoFreq: value});
     // Make sure to call refreshSynth to reset to current state values
     this.refreshSynth();
   }
 
   // Updates the vibrato pitch given the slider
-  updateVibratoPitch(event) {
-    vibrato.depth.input.value = event.target.value;
+  updateVibratoPitch(event, value) {
+    vibrato.depth.input.value = value;
     // Update state (moves slier)
-    this.setState({VibratoPitch: event.target.value});
+    this.setState({VibratoPitch: value});
     // Make sure to call refreshSynth to reset to current state values
     this.refreshSynth();
   }
 
   // Turns the vibrato on or off
-  toggleVibrato(checked) {
-    this.synthState.VibratoOn = checked;
+  toggleVibrato(event) {
+    this.synthState.VibratoOn = event.target.checked;
     // This allows the slider to move on the page itself
-    this.setState({VibratoOn: checked});
+    this.setState({VibratoOn: event.target.checked});
     // If the vibrato is turned off, reset the two vibrato sliders
     if (!this.synthState.VibratoOn) {
       // Resets the vibrato level on the synth to 0
@@ -270,10 +274,10 @@ class Home extends Component{
   }
 
   // Turns the lowpass filter on or off
-  toggleLowpass(checked) {
-    this.synthState.LowpassOn = checked;
+  toggleLowpass(event) {
+    this.synthState.LowpassOn = event.target.checked;
     // This allows the slider to move on the page itself
-    this.setState({LowpassOn: checked});
+    this.setState({LowpassOn: event.target.checked});
     // If the lowpass filter is turned off, reset the lowpass slider
     if (!this.synthState.LowpassOn) {
       // Resets the lowpass cutoff on the synth to 0
@@ -308,7 +312,6 @@ class Home extends Component{
   // Adds the effect to the effects list
   addEffect(effect) {
     effects.push(effect);
-    console.log(effects)
   }
 
   // Removes the effect from the effects list
@@ -316,7 +319,6 @@ class Home extends Component{
     var index = effects.indexOf(effect);
     // Splices the effect out of the list
     effects.splice(index, 1);
-    console.log(effects)
   }
 
   // Updates the synth to match the current state
@@ -359,14 +361,15 @@ class Home extends Component{
             <h5>Synth Effects</h5>
           </Row>
           <Row className="effects">
-            <Col xs={1}>
+            <Col xs={2}>
               <p>Distortion</p>
               <Row className="slider">
-                <Col xs={6}>
+                <Col xs={3}>
                   <p>Level: </p>
                 </Col>
                 <Col className="bar" sm={1}>
-                  <RangeStepInput
+                  <Slider
+                    orientation="vertical"
                     min={0}
                     max={10}
                     value={this.state.Distortion}
@@ -377,44 +380,48 @@ class Home extends Component{
                 </Col>
               </Row>
             </Col>
-            <Col xs={2}>
+            <Col className="switch" xs={2}>
               <Switch
                 onChange={this.toggleDistortion}
                 checked={this.state.DistortionOn}
+                color="primary"
               />
             </Col>
-            <Col xs={1}>
+            <Col xs={2}>
               <p>Reverb</p>
               <Row className="slider">
-                <Col xs={6}>
+                <Col xs={3}>
                   <p>Level: </p>
                 </Col>
-                <Col className="bar" sm={1}>
-                  <RangeStepInput
+                <Col className="bar" sm={3}>
+                  <Slider
+                    orientation="vertical"
                     min={0}
                     max={0.9}
                     value={this.state.ReverbRoom}
-                    step={0.01}
+                    step={0.1}
                     onChange={this.updateReverbRoom}
                     disabled={!this.state.ReverbOn}
                   />
                 </Col>
               </Row>
             </Col>
-            <Col xs={2}>
+            <Col className="switch" xs={2}>
               <Switch
                 onChange={this.toggleReverb}
                 checked={this.synthState.ReverbOn}
+                color="primary"
               />
             </Col>
-            <Col xs={1}>
+            <Col xs={2}>
               <p>Vibrato</p>
               <Row className="slider">
-                <Col xs={6}>
+                <Col xs={2}>
                   <p>Freq: </p>
                 </Col>
                 <Col className="bar" sm={1}>
-                  <RangeStepInput
+                  <Slider
+                    orientation="vertical"
                     min={0}
                     max={10}
                     value={this.state.VibratoFreq}
@@ -423,13 +430,12 @@ class Home extends Component{
                     disabled={!this.state.VibratoOn}
                   />
                 </Col>
-              </Row>
-              <Row className="slider">
-                <Col xs={6}>
+                <Col xs={2}>
                   <p>Pitch: </p>
                 </Col>
                 <Col className="bar" sm={1}>
-                  <RangeStepInput
+                  <Slider
+                    orientation="vertical"
                     min={0}
                     max={1}
                     value={this.state.VibratoPitch}
@@ -440,10 +446,11 @@ class Home extends Component{
                 </Col>
               </Row>
             </Col>
-            <Col xs={2}>
+            <Col className="switch" xs={2}>
               <Switch
                 onChange={this.toggleVibrato}
                 checked={this.state.VibratoOn}
+                color="primary"
               />
             </Col>
           </Row>
