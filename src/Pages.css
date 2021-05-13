@@ -1,7 +1,3 @@
-body {
-  background-color: #a9a9a9;
-}
-
 .welcome-container {
   margin: auto, auto, auto, auto;
   align-items: center;
@@ -39,6 +35,16 @@ body {
 
 .switch {
   margin-top: -5px;
+}
+
+.envelope-container {
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.envelope-controls {
+  justify-content: center;
 }
 
 .oscillator-container {

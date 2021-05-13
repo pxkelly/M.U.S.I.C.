@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Form } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import * as Tone from 'tone';
 import Slider from '@material-ui/core/Slider';
 import Switch from '@material-ui/core/Switch';
@@ -7,13 +7,12 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import './App.css';
 import './Pages.css';
 
 // Global variables defined here
 // synth is the synth used on the entire page
-var synth = new Tone.Synth().toDestination();
+var synth = new Tone.AMSynth().toDestination();
 
 // There are globals for every effect on the synth for easier control
 var distortion = new Tone.Distortion(0).toDestination();
@@ -23,6 +22,17 @@ var lowpass = new Tone.Filter(0, "lowpass").toDestination();
 
 // This keeps track of all the active effects to add to the synthOff
 var effects = [];
+
+// Creates an envelope to attach to the synth at the default values
+var attack = 0;
+var decay = 0;
+var sustain = 1;
+var release = 0;
+// Attaches the envelope to the synth
+synth.envelope.attack = attack;
+synth.envelope.decay = decay;
+synth.envelope.sustain = sustain;
+synth.envelope.release = release;
 
 // This is the current oscillator on the synth, default is triangle wave
 var oscillator = "triangle";
@@ -44,7 +54,11 @@ class Home extends Component{
       VibratoOn: false,
       LowpassCut: 0,
       LowpassOn: false,
-      TriangleOsc: true
+      TriangleOsc: true,
+      Attack: 0,
+      Decay: 0,
+      Sustain: 1,
+      Release: 0
     }
 
     this.synthState = {
@@ -67,6 +81,10 @@ class Home extends Component{
     this.toggleVibrato = this.toggleVibrato.bind(this);
     this.updateLowpassCut = this.updateLowpassCut.bind(this);
     this.toggleLowpass = this.toggleLowpass.bind(this);
+    this.updateAttack = this.updateAttack.bind(this);
+    this.updateDecay = this.updateDecay.bind(this);
+    this.updateSustain = this.updateSustain.bind(this);
+    this.updateRelease = this.updateRelease.bind(this);
     this.updateOscillator = this.updateOscillator.bind(this);
     this.addEffect = this.addEffect.bind(this);
     this.removeEffect = this.removeEffect.bind(this);
@@ -299,6 +317,42 @@ class Home extends Component{
     }
   }
 
+  // Updates the attack value of the envelope
+  updateAttack(event, value) {
+    attack = value;
+    // Update state (moves slider)
+    this.setState({Attack: value});
+    // Make sure to call refreshSynth to reset to current state values
+    this.refreshSynth();
+  }
+
+  // Updates the decay value of the envelope
+  updateDecay(event, value) {
+    decay = value;
+    // Update state (moves slider)
+    this.setState({Decay: value});
+    // Make sure to call refreshSynth to reset to current state values
+    this.refreshSynth();
+  }
+
+  // Updates the sustain value of the envelope
+  updateSustain(event, value) {
+    sustain = value;
+    // Update state (moves slider)
+    this.setState({Sustain: value});
+    // Make sure to call refreshSynth to reset to current state values
+    this.refreshSynth();
+  }
+
+  // Updates the release value of the envelope
+  updateRelease(event, value) {
+    release = value;
+    // Update state (moves slider)
+    this.setState({Release: value});
+    // Make sure to call refreshSynth to reset to current state values
+    this.refreshSynth();
+  }
+
   // Changes the oscillator attached to the synth
   updateOscillator(event) {
     // Update the global variable to save these changes
@@ -329,11 +383,16 @@ class Home extends Component{
   // Updates the synth to match the current state
   refreshSynth() {
     // Resets the synth
-    synth = new Tone.Synth().toDestination();
+    synth = new Tone.AMSynth().toDestination();
     // Add the effects to the synth
     effects.forEach(effect => synth.connect(eval(effect)));
     // Make sure the proper oscillator is used
     synth.oscillator.type = oscillator;
+    // Set up the envelope
+    synth.envelope.attack = attack;
+    synth.envelope.decay = decay;
+    synth.envelope.sustain = sustain;
+    synth.envelope.release = release;
   }
 
   render(){
@@ -456,6 +515,69 @@ class Home extends Component{
                 onChange={this.toggleVibrato}
                 checked={this.state.VibratoOn}
                 color="primary"
+              />
+            </Col>
+          </Row>
+        </Container>
+
+        <br />
+        <br />
+
+        <Container className="envelope-container">
+          <Row className="section-header">
+            <h5>Envelope Control</h5>
+          </Row>
+          <Row className="envelope-controls">
+            <Col xs={1}>
+              <p>Attack: </p>
+            </Col>
+            <Col className="bar" sm={1}>
+              <Slider
+                orientation="vertical"
+                min={0}
+                max={2}
+                value={this.state.Attack}
+                step={0.1}
+                onChange={this.updateAttack}
+              />
+            </Col>
+            <Col xs={1}>
+              <p>Decay: </p>
+            </Col>
+            <Col className="bar" sm={1}>
+              <Slider
+                orientation="vertical"
+                min={0}
+                max={2}
+                value={this.state.Decay}
+                step={0.1}
+                onChange={this.updateDecay}
+              />
+            </Col>
+            <Col xs={1}>
+              <p>Sustain: </p>
+            </Col>
+            <Col className="bar" sm={1}>
+              <Slider
+                orientation="vertical"
+                min={0}
+                max={1}
+                value={this.state.Sustain}
+                step={0.1}
+                onChange={this.updateSustain}
+              />
+            </Col>
+            <Col xs={1}>
+              <p>Release: </p>
+            </Col>
+            <Col className="bar" sm={1}>
+              <Slider
+                orientation="vertical"
+                min={0}
+                max={5}
+                value={this.state.Release}
+                step={0.1}
+                onChange={this.updateRelease}
               />
             </Col>
           </Row>
