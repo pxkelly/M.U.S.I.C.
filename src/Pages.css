@@ -3,6 +3,16 @@
   align-items: center;
 }
 
+.welcome {
+  text-align: center;
+  justify-content: center;
+}
+
+.controls-container {
+  margin: auto, auto, auto, auto;
+  align-items: center;
+}
+
 .section-header {
   text-align: center;
   align-items: center;

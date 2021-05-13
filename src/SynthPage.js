@@ -40,7 +40,7 @@ var oscillator = "triangle";
 // keyDown keeps track if the key is pressed or not (note is playing)
 var keyDown = false;
 
-class Home extends Component{
+class SynthPage extends Component {
   constructor(props) {
     super(props);
     // Properties for state
@@ -395,15 +395,10 @@ class Home extends Component{
     synth.envelope.release = release;
   }
 
-  render(){
+  render() {
     return(
       <>
-        <Container className="welcome-container">
-          <Row className="section-header">
-            <Col>
-              <h1>Welcome to M.U.S.I.C.</h1>
-            </Col>
-          </Row>
+        <Container className="controls-container">
           <Row className="section-header">
             <h5>Controls</h5>
           </Row>
@@ -624,8 +619,8 @@ class Home extends Component{
           </Row>
         </Container>
       </>
-    )
+    );
   }
 }
 
-export default Home;
+export default SynthPage;
