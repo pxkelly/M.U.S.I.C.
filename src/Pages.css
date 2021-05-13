@@ -42,8 +42,9 @@ body {
 }
 
 .oscillator-container {
-  margin: auto, auto, auto, auto;
+  margin: auto;
   align-items: center;
+  justify-content: center;
 }
 
 .oscillators {

@@ -3,6 +3,11 @@ import { Container, Row, Col, Form } from 'react-bootstrap';
 import * as Tone from 'tone';
 import Slider from '@material-ui/core/Slider';
 import Switch from '@material-ui/core/Switch';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 import './App.css';
 import './Pages.css';
 
@@ -297,9 +302,9 @@ class Home extends Component{
   // Changes the oscillator attached to the synth
   updateOscillator(event) {
     // Update the global variable to save these changes
-    oscillator = event.target.id;
+    oscillator = event.target.value;
     // Updates the selected button on the page
-    if (event.target.id !== "triangle") {
+    if (event.target.value !== "triangle") {
       this.setState({TriangleOsc: false});
     }
     else {
@@ -457,45 +462,43 @@ class Home extends Component{
         </Container>
 
         <br />
+        <br />
 
         <Container className="oscillator-container">
           <Row className="section-header">
             <h5>Oscillator Type</h5>
           </Row>
           <Row className="oscillators">
-            <Col xs={1}>
-              <Form.Check
-                type="radio"
-                label="Sine"
-                id="sine"
+            <FormControl component="fieldset">
+              <RadioGroup
+                aria-label="oscillators"
+                name="oscillator"
+                value={oscillator}
                 onChange={this.updateOscillator}
-              />
-            </Col>
-            <Col xs={1}>
-              <Form.Check
-                type="radio"
-                label="Square"
-                id="square"
-                onChange={this.updateOscillator}
-              />
-            </Col>
-            <Col xs={1}>
-              <Form.Check
-                type="radio"
-                label="Triangle"
-                id="triangle"
-                onChange={this.updateOscillator}
-                checked={this.state.TriangleOsc}
-              />
-            </Col>
-            <Col xs={1}>
-              <Form.Check
-                type="radio"
-                label="Sawtooth"
-                id="sawtooth"
-                onChange={this.updateOscillator}
-              />
-            </Col>
+                row
+              >
+                <FormControlLabel
+                  value="triangle"
+                  control={<Radio />}
+                  label="Triangle"
+                />
+                <FormControlLabel
+                  value="sine"
+                  control={<Radio />}
+                  label="Sine"
+                />
+                <FormControlLabel
+                  value="square"
+                  control={<Radio />}
+                  label="Square"
+                />
+                <FormControlLabel
+                  value="sawtooth"
+                  control={<Radio />}
+                  label="Sawtooth"
+                />
+              </RadioGroup>
+            </FormControl>
           </Row>
         </Container>
       </>
