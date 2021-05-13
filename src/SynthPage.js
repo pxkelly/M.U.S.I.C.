@@ -19,6 +19,7 @@ var distortion = new Tone.Distortion(0).toDestination();
 var reverb = new Tone.JCReverb(0).toDestination();
 var vibrato = new Tone.Vibrato(0, 0).toDestination();
 var lowpass = new Tone.Filter(0, "lowpass").toDestination();
+var highpass = new Tone.Filter(20000, "highpass").toDestination();
 
 // This keeps track of all the active effects to add to the synthOff
 var effects = [];
@@ -33,6 +34,9 @@ synth.envelope.attack = attack;
 synth.envelope.decay = decay;
 synth.envelope.sustain = sustain;
 synth.envelope.release = release;
+
+// var pan = new Tone.Panner(-1).toDestination();
+// synth.connect(pan);
 
 // This is the current oscillator on the synth, default is triangle wave
 var oscillator = "triangle";
@@ -54,6 +58,8 @@ class SynthPage extends Component {
       VibratoOn: false,
       LowpassCut: 0,
       LowpassOn: false,
+      HighpassCut: 20000,
+      HighpassOn: false,
       TriangleOsc: true,
       Attack: 0,
       Decay: 0,
@@ -66,7 +72,8 @@ class SynthPage extends Component {
       DistortionOn: false,
       ReverbOn: false,
       VibratoOn: false,
-      LowpassOn: false
+      LowpassOn: false,
+      HighpassOn: false
     }
 
     // Binds function to page
@@ -81,6 +88,8 @@ class SynthPage extends Component {
     this.toggleVibrato = this.toggleVibrato.bind(this);
     this.updateLowpassCut = this.updateLowpassCut.bind(this);
     this.toggleLowpass = this.toggleLowpass.bind(this);
+    this.updateHighpassCut = this.updateHighpassCut.bind(this);
+    this.toggleHighpass = this.toggleHighpass.bind(this);
     this.updateAttack = this.updateAttack.bind(this);
     this.updateDecay = this.updateDecay.bind(this);
     this.updateSustain = this.updateSustain.bind(this);
@@ -288,10 +297,10 @@ class SynthPage extends Component {
   }
 
   // Updates the lowpass cutoff frequency given the slider
-  updateLowpassCut(event) {
-    lowpass.frequency.value = event.target.value;
+  updateLowpassCut(event, value) {
+    lowpass.frequency.value = value;
     // Update state (moves slider)
-    this.setState({LowpassCut: event.target.value});
+    this.setState({LowpassCut: value});
     // Make sure to call refreshSynth to reset to current state values
     this.refreshSynth();
   }
@@ -314,6 +323,36 @@ class SynthPage extends Component {
     // Otherwise, add distortion to the effects list
     else {
       this.addEffect("lowpass");
+    }
+  }
+
+  // Updates the highpass cutoff frequency given the slider
+  updateHighpassCut(event, value) {
+    highpass.frequency.value = value;
+    // Update state (moves slider)
+    this.setState({HighpassCut: value});
+    // Make sure to call refreshSynth to reset to current state values
+    this.refreshSynth();
+  }
+
+  // Turns the highpass filter on or off
+  toggleHighpass(event) {
+    this.synthState.HighpassOn = event.target.checked;
+    // This allows the slider to move on the page itself
+    this.setState({HighpassOn: event.target.checked});
+    // If the highpass filter is turned off, reset the highpass slider
+    if (!this.synthState.HighpassOn) {
+      // Resets the lowpass cutoff on the synth to 20000
+      highpass.frequency.value = 20000;
+      // Resets the state (will reset slider)
+      this.setState({HighpassCut: 20000});
+      // Removes distortion from the effects list
+      this.removeEffect("highpass");
+      //this.refreshSynth();
+    }
+    // Otherwise, add distortion to the effects list
+    else {
+      this.addEffect("highpass");
     }
   }
 
@@ -509,6 +548,71 @@ class SynthPage extends Component {
               <Switch
                 onChange={this.toggleVibrato}
                 checked={this.state.VibratoOn}
+                color="primary"
+              />
+            </Col>
+          </Row>
+        </Container>
+
+        <br />
+        <br />
+
+        <Container className="filter-container">
+          <Row className="section-header">
+            <h5>Filter Control</h5>
+          </Row>
+          <Row className="filters">
+            <Col xs={2}>
+              <p>Lowpass</p>
+              <Row className="slider">
+                <Col xs={3}>
+                  <p>Freq: </p>
+                </Col>
+                <Col className="bar" sm={1}>
+                  <Slider
+                    orientation="vertical"
+                    min={0}
+                    max={5000}
+                    value={this.state.LowpassCut}
+                    step={10}
+                    onChange={this.updateLowpassCut}
+                    disabled={!this.synthState.LowpassOn}
+                    valueLabelDisplay="auto"
+                  />
+                </Col>
+              </Row>
+            </Col>
+            <Col className="switch" xs={2}>
+              <Switch
+                onChange={this.toggleLowpass}
+                checked={this.state.LowpassOn}
+                color="primary"
+              />
+            </Col>
+            <Col xs={2}>
+              <p>Highpass</p>
+              <Row className="slider">
+                <Col xs={3}>
+                  <p>Freq: </p>
+                </Col>
+                <Col className="bar" sm={3}>
+                  <Slider
+                    orientation="vertical"
+                    min={5000}
+                    max={20000}
+                    value={this.state.HighpassCut}
+                    step={10}
+                    onChange={this.updateHighpassCut}
+                    disabled={!this.state.HighpassOn}
+                    valueLabelDisplay="auto"
+                  />
+                </Col>
+              </Row>
+            </Col>
+            <Col className="switch" xs={2}>
+              <Switch
+                onChange={this.toggleHighpass}
+                checked={this.synthState.HighpassOn}
                 color="primary"
               />
             </Col>

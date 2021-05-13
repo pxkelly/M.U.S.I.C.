@@ -47,6 +47,21 @@
   margin-top: -5px;
 }
 
+.filter-container {
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-controls {
+  justify-content: center;
+}
+
+.filters {
+  justify-content: center;
+  padding-top: 5px;
+}
+
 .envelope-container {
   margin: auto;
   align-items: center;
