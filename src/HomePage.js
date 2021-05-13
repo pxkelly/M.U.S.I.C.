@@ -33,7 +33,10 @@ class HomePage extends Component {
             <p>This tool was created as the final project for Professor Carter's Music270 at Hamilton College by Peter Kelly</p>
           </Row>
           <Row className="welcome">
-            <p>It was written in Javascript using the React library</p>
+            <p>It was written in Javascript using React and the Tone.js library</p>
+          </Row>
+          <Row className="welcome">
+            <p>*NOTE* Tone.js is very computationally expensive, so if you hear any crackling in the audio, please refresh the page</p>
           </Row>
           <Row className="welcome">
             <a href="https://github.com/pxkelly/MUSIC">Click me to go to the GitHub repository for the code</a>
