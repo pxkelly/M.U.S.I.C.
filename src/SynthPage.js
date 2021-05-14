@@ -18,6 +18,10 @@ var synth = new Tone.AMSynth().toDestination();
 var distortion = new Tone.Distortion(0).toDestination();
 var reverb = new Tone.JCReverb(0).toDestination();
 var vibrato = new Tone.Vibrato(0, 0).toDestination();
+var pitch = new Tone.PitchShift(0).toDestination();
+var pan = new Tone.Panner(0).toDestination();
+
+// These are the two filters you can apply to the synth
 var lowpass = new Tone.Filter(0, "lowpass").toDestination();
 var highpass = new Tone.Filter(20000, "highpass").toDestination();
 
@@ -34,9 +38,6 @@ synth.envelope.attack = attack;
 synth.envelope.decay = decay;
 synth.envelope.sustain = sustain;
 synth.envelope.release = release;
-
-// var pan = new Tone.Panner(-1).toDestination();
-// synth.connect(pan);
 
 // This is the current oscillator on the synth, default is triangle wave
 var oscillator = "triangle";
@@ -56,6 +57,10 @@ class SynthPage extends Component {
       VibratoFreq: 0,
       VibratoPitch: 0.0,
       VibratoOn: false,
+      Pitch: 0,
+      PitchOn: false,
+      Pan: 0,
+      PanOn: false,
       LowpassCut: 0,
       LowpassOn: false,
       HighpassCut: 20000,
@@ -72,6 +77,8 @@ class SynthPage extends Component {
       DistortionOn: false,
       ReverbOn: false,
       VibratoOn: false,
+      PitchOn: false,
+      PanOn: false,
       LowpassOn: false,
       HighpassOn: false
     }
@@ -86,6 +93,10 @@ class SynthPage extends Component {
     this.updateVibratoFreq = this.updateVibratoFreq.bind(this);
     this.updateVibratoPitch = this.updateVibratoPitch.bind(this);
     this.toggleVibrato = this.toggleVibrato.bind(this);
+    this.updatePitch = this.updatePitch.bind(this);
+    this.togglePitch = this.togglePitch.bind(this);
+    this.updatePan = this.updatePan.bind(this);
+    this.togglePan = this.togglePan.bind(this);
     this.updateLowpassCut = this.updateLowpassCut.bind(this);
     this.toggleLowpass = this.toggleLowpass.bind(this);
     this.updateHighpassCut = this.updateHighpassCut.bind(this);
@@ -216,7 +227,6 @@ class SynthPage extends Component {
       this.setState({Distortion: 0});
       // Removes distortion from the effects list
       this.removeEffect("distortion");
-      //this.refreshSynth();
     }
     // Otherwise, add distortion to the effects list
     else {
@@ -226,9 +236,8 @@ class SynthPage extends Component {
 
   // Updates the reverb room size given the slider
   updateReverbRoom(event, value) {
-    console.log(value)
     reverb.roomSize.input.value = value;
-    //Update state (moves slider)
+    // Update state (moves slider)
     this.setState({ReverbRoom: value});
     // Make sure to call refreshSynth to reset to current state values
     this.refreshSynth();
@@ -245,11 +254,10 @@ class SynthPage extends Component {
       reverb.roomSize.input.value = 0;
       // Resets the state (will reset slider)
       this.setState({ReverbRoom: 0});
-      // Removes distortion from the effects list
+      // Removes reverb from the effects list
       this.removeEffect("reverb");
-      //this.refreshSynth();
     }
-    // Otherwise, add distortion to the effects list
+    // Otherwise, add reverb to the effects list
     else {
       this.addEffect("reverb");
     }
@@ -286,13 +294,70 @@ class SynthPage extends Component {
       // Resets the state (will reset slider)
       this.setState({VibratoFreq: 0});
       this.setState({VibratoPitch: 0});
-      // Removes distortion from the effects list
+      // Removes vibrato from the effects list
       this.removeEffect("vibrato");
-      //this.refreshSynth();
     }
-    // Otherwise, add distortion to the effects list
+    // Otherwise, add vibrato to the effects list
     else {
       this.addEffect("vibrato");
+    }
+  }
+
+  // Updates the pitch shift given the slider
+  updatePitch(event, value) {
+    pitch.pitch = value;
+    // Update state (moves slider)
+    this.setState({Pitch: value});
+    // Make sure to call refreshSynth to reset to current state values
+    this.refreshSynth();
+  }
+
+  // Turns the pitch shift on or off
+  togglePitch(event) {
+    this.synthState.PitchOn = event.target.checked;
+    // This allows the slider to move on the page itself
+    this.setState({PitchOn: event.target.checked});
+    // If the pitch shift is turned off, reset the pitch shift slider
+    if (!this.synthState.PitchOn) {
+      // Resets the pitch shift on the synth to 0
+      pitch.pitch = 0;
+      // Resets the state (will reset slider)
+      this.setState({Pitch: 0});
+      // Removes pitch from the effects list
+      this.removeEffect("pitch");
+    }
+    // Otherwise, add pitch to the effects list
+    else {
+      this.addEffect("pitch");
+    }
+  }
+
+  // Updates the pan given the slider
+  updatePan(event, value) {
+    pan.pan.input.value = value;
+    // Update state (moves slider)
+    this.setState({Pan: value});
+    // Make sure to call refreshSynth to reset to current state values
+    this.refreshSynth();
+  }
+
+  // Turns the panner on or off
+  togglePan(event) {
+    this.synthState.PanOn = event.target.checked;
+    // This allows the slider to move on the page itself
+    this.setState({PanOn: event.target.checked});
+    // If the panner is turned off, reset the pan slider
+    if (!this.synthState.PanOn) {
+      // Resets the panner on the synth to 0
+      pan.pan.input.value = 0;
+      // Resets the state (will reset slider)
+      this.setState({Pan: 0});
+      // Removes pan from the effects list
+      this.removeEffect("pan");
+    }
+    // Otherwise, add pan to the effects list
+    else {
+      this.addEffect("pan");
     }
   }
 
@@ -316,11 +381,10 @@ class SynthPage extends Component {
       lowpass.frequency.value = 0;
       // Resets the state (will reset slider)
       this.setState({LowpassCut: 0});
-      // Removes distortion from the effects list
+      // Removes lowpass filter from the effects list
       this.removeEffect("lowpass");
-      //this.refreshSynth();
     }
-    // Otherwise, add distortion to the effects list
+    // Otherwise, add lowpass filter to the effects list
     else {
       this.addEffect("lowpass");
     }
@@ -342,15 +406,14 @@ class SynthPage extends Component {
     this.setState({HighpassOn: event.target.checked});
     // If the highpass filter is turned off, reset the highpass slider
     if (!this.synthState.HighpassOn) {
-      // Resets the lowpass cutoff on the synth to 20000
+      // Resets the highpass cutoff on the synth to 20000
       highpass.frequency.value = 20000;
       // Resets the state (will reset slider)
       this.setState({HighpassCut: 20000});
-      // Removes distortion from the effects list
+      // Removes highpass filter from the effects list
       this.removeEffect("highpass");
-      //this.refreshSynth();
     }
-    // Otherwise, add distortion to the effects list
+    // Otherwise, add highpass filter to the effects list
     else {
       this.addEffect("highpass");
     }
@@ -516,8 +579,8 @@ class SynthPage extends Component {
             <Col xs={2}>
               <p>Vibrato</p>
               <Row className="slider">
-                <Col xs={2}>
-                  <p>Freq: </p>
+                <Col xs={3}>
+                  <p>Speed: </p>
                 </Col>
                 <Col className="bar" sm={1}>
                   <Slider
@@ -531,8 +594,8 @@ class SynthPage extends Component {
                     valueLabelDisplay="auto"
                   />
                 </Col>
-                <Col xs={2}>
-                  <p>Pitch: </p>
+                <Col xs={3}>
+                  <p>Level: </p>
                 </Col>
                 <Col className="bar" sm={1}>
                   <Slider
@@ -552,6 +615,63 @@ class SynthPage extends Component {
               <Switch
                 onChange={this.toggleVibrato}
                 checked={this.state.VibratoOn}
+                color="primary"
+              />
+            </Col>
+          </Row>
+          <br />
+          <Row className="effects">
+            <Col xs={2}>
+              <p>Detune</p>
+              <Row className="slider">
+                <Col xs={3}>
+                  <p>Level: </p>
+                </Col>
+                <Col className="bar" sm={1}>
+                  <Slider
+                    orientation="vertical"
+                    min={-24}
+                    max={24}
+                    value={this.state.Pitch}
+                    step={1}
+                    onChange={this.updatePitch}
+                    disabled={!this.synthState.PitchOn}
+                    valueLabelDisplay="auto"
+                  />
+                </Col>
+              </Row>
+            </Col>
+            <Col className="switch" xs={2}>
+              <Switch
+                onChange={this.togglePitch}
+                checked={this.state.PitchOn}
+                color="primary"
+              />
+            </Col>
+            <Col xs={2}>
+              <p>Pan</p>
+              <Row className="slider">
+                <Col xs={3}>
+                  <p>Level: </p>
+                </Col>
+                <Col className="bar" sm={3}>
+                  <Slider
+                    orientation="vertical"
+                    min={-1}
+                    max={1}
+                    value={this.state.Pan}
+                    step={0.1}
+                    onChange={this.updatePan}
+                    disabled={!this.state.PanOn}
+                    valueLabelDisplay="auto"
+                  />
+                </Col>
+              </Row>
+            </Col>
+            <Col className="switch" xs={2}>
+              <Switch
+                onChange={this.togglePan}
+                checked={this.synthState.PanOn}
                 color="primary"
               />
             </Col>
