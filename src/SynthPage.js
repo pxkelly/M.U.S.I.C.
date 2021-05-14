@@ -474,6 +474,7 @@ class SynthPage extends Component {
                     step={0.1}
                     onChange={this.updateDistortion}
                     disabled={!this.synthState.DistortionOn}
+                    valueLabelDisplay="auto"
                   />
                 </Col>
               </Row>
@@ -500,6 +501,7 @@ class SynthPage extends Component {
                     step={0.1}
                     onChange={this.updateReverbRoom}
                     disabled={!this.state.ReverbOn}
+                    valueLabelDisplay="auto"
                   />
                 </Col>
               </Row>
@@ -526,6 +528,7 @@ class SynthPage extends Component {
                     step={0.1}
                     onChange={this.updateVibratoFreq}
                     disabled={!this.state.VibratoOn}
+                    valueLabelDisplay="auto"
                   />
                 </Col>
                 <Col xs={2}>
@@ -540,6 +543,7 @@ class SynthPage extends Component {
                     step={0.1}
                     onChange={this.updateVibratoPitch}
                     disabled={!this.state.VibratoOn}
+                    valueLabelDisplay="auto"
                   />
                 </Col>
               </Row>
@@ -638,6 +642,7 @@ class SynthPage extends Component {
                 value={this.state.Attack}
                 step={0.1}
                 onChange={this.updateAttack}
+                valueLabelDisplay="auto"
               />
             </Col>
             <Col xs={1}>
@@ -651,6 +656,7 @@ class SynthPage extends Component {
                 value={this.state.Decay}
                 step={0.1}
                 onChange={this.updateDecay}
+                valueLabelDisplay="auto"
               />
             </Col>
             <Col xs={1}>
@@ -664,6 +670,7 @@ class SynthPage extends Component {
                 value={this.state.Sustain}
                 step={0.1}
                 onChange={this.updateSustain}
+                valueLabelDisplay="auto"
               />
             </Col>
             <Col xs={1}>
@@ -677,6 +684,7 @@ class SynthPage extends Component {
                 value={this.state.Release}
                 step={0.1}
                 onChange={this.updateRelease}
+                valueLabelDisplay="auto"
               />
             </Col>
           </Row>
